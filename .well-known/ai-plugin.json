@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Github Project Manager",
+  "name_for_model": "gha",
+  "description_for_human": "Plugin to work with github projects",
+  "description_for_model": "Plugin to work with github projects",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:5003/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "http://localhost:5003/logo.png",
+  "contact_email": "legal@example.com",
+  "legal_info_url": "http://example.com/legal"
+}
