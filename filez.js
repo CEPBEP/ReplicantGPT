@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
-import querystring from 'querystring';
 
 // Function to list files in a directory
 export async function listFiles(directoryPath) {
@@ -27,17 +26,23 @@ export async function listFiles(directoryPath) {
     }
 }
 
-export async function runProjectCmd(cmd, options) {
+const escaper = (str) => str.replace(/"/g, '\\"');
+
+export async function runProjectCmd(cmd, meta, options) {
 
     const env = {
-        FOO: `this is a very 'log' "string"` // process.env.EXISTING_VAR
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+        PROMPT: meta.PROMPT,
+        SYSTEM: meta.SYSTEM,
+        MODEL: meta.MODEL
     };
 
-    const envString = Object.entries(env).map(([key, value]) => `-e ${key}=${querystring.escape(value)}`).join(' ');
+    const envString = Object.entries(env).map(([key, value]) => `-e ${key}="${escaper(value)}"`).join(' ');
 
-    // docker run -ti -v $(pwd)/project:/project devy /bin/bash
-    project_dir = path.join(__dirname, 'project');
-    const dockerCmd = `docker run -ti ${envString} ${project_dir}:/project devy /bin/bash -c "${cmd}"`;
+    const project_dir = path.join(process.cwd(), 'project');
+    const dockerCmd = `docker run ${envString} -v ${project_dir}:/project devy /bin/bash -c "${cmd}"`;
+    console.log(dockerCmd)
+    return runCommand(dockerCmd, options);
 }
 
 export async function runCommand(cmd, options) {
