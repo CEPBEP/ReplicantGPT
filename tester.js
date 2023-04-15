@@ -1,4 +1,4 @@
-import {runProjectCmd} from './filez';
+import {runProjectCmd} from './filez.js';
 
 
 runProjectCmd('ls -hal').then((result) => {
