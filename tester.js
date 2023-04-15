@@ -49,4 +49,3 @@ To rename files, use:
     console.log(error);
 })
 
-console.log('done')

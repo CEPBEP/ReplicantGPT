@@ -1,4 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
+const { performOperations } = require("./files.js");
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -16,7 +17,10 @@ const run = async () => {
         }],
     });
 
-    console.log(completion.data.choices[0].message);
+    const result = completion.data.choices[0].message;
+
+    console.log({result}); 
+    performOperations(result.content, '/project');
 }
 
 run();
