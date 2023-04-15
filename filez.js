@@ -33,7 +33,6 @@ export async function runProjectCmd(cmd, meta, options) {
     const env = {
         OPENAI_API_KEY: process.env.OPENAI_API_KEY,
         PROMPT: meta.PROMPT,
-        SYSTEM: meta.SYSTEM,
         MODEL: meta.MODEL
     };
 

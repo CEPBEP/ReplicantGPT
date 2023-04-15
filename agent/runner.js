@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require("openai");
-const { performOperations } = require("./files.js");
+const { performOperations, system } = require("./files.js");
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -11,7 +11,7 @@ const run = async () => {
     const completion = await openai.createChatCompletion({
         model: process.env.MODEL,
         messages: [{
-            role: "system", content: process.env.SYSTEM,
+            role: "system", content: system,
         }, {
             role: "user", content: process.env.PROMPT,
         }],
