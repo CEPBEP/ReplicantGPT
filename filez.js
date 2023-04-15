@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
+import querystring from 'querystring';
 
 // Function to list files in a directory
 export async function listFiles(directoryPath) {
@@ -24,6 +25,19 @@ export async function listFiles(directoryPath) {
         console.error(err);
         throw err;
     }
+}
+
+export async function runProjectCmd(cmd, options) {
+
+    const env = {
+        FOO: `this is a very 'log' "string"` // process.env.EXISTING_VAR
+    };
+
+    const envString = Object.entries(env).map(([key, value]) => `-e ${key}=${querystring.escape(value)}`).join(' ');
+
+    // docker run -ti -v $(pwd)/project:/project devy /bin/bash
+    project_dir = path.join(__dirname, 'project');
+    const dockerCmd = `docker run -ti ${envString} ${project_dir}:/project devy /bin/bash -c "${cmd}"`;
 }
 
 export async function runCommand(cmd, options) {
