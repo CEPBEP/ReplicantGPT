@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as dotenv from 'dotenv';
+import Replicate from 'replicate';
 import {
   getIssue,
   getIssues,
@@ -19,9 +20,9 @@ import run from './agent/runner.js';
 
 dotenv.config();
 
-// const replicate = new Replicate({
-//   auth: process.env.REPLICATE_API_TOKEN,
-// });
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_TOKEN,
+});
 
 const app = express();
 app.use(morgan('dev')); // Use morgan middleware to log all incoming requests
@@ -47,6 +48,46 @@ app.post(
     res.status(200).json({
       status: 'coding has started, the coder will send a PR when it is ready',
     });
+  }),
+);
+
+app.post(
+  '/generate_img',
+  asyncHandler(async (req, res) => {
+    console.log('geneateImage', req.body);
+    const { prompt, num_outputs = 1 } = req.body;
+
+    const output = await replicate.run(
+      'stability-ai/stable-diffusion:328bd9692d29d6781034e3acab8cf3fcb122161e6f5afb896a4ca9fd57090577',
+      {
+        input: {
+          prompt,
+          image_dimensions: '512x512',
+          num_outputs,
+        },
+      },
+    );
+    res.status(200).json(output);
+  }),
+);
+
+app.post(
+  '/mutate_img',
+  asyncHandler(async (req, res) => {
+    console.log('mutateImage', req.body);
+    const { image, prompt } = req.body;
+
+    const output = await replicate.run(
+      'rossjillian/controlnet:d55b9f2dcfb156089686b8f767776d5b61b007187a4e1e611881818098100fbb',
+      {
+        input: {
+          image,
+          prompt,
+          structure: 'canny',
+        },
+      },
+    );
+    res.status(200).json(output);
   }),
 );
 

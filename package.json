@@ -19,6 +19,6 @@
     "morgan": "^1.10.0",
     "octokit": "^2.0.14",
     "openai": "^3.2.1",
-    "replicate": "^0.9.1"
+    "replicate": "^0.9.3"
   }
 }

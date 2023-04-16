@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Developer Plugin
   description: A plugin to generate PRs for github projects
-  version: "v1"
+  version: 'v1'
 servers:
   - url: http://localhost:5003
 paths:
@@ -30,10 +30,10 @@ paths:
                 properties:
                   success:
                     type: boolean
-  /list_files:
+  /generate_img:
     post:
-      summary: List files in a directory
-      operationId: list_files
+      summary: Generate images based on descriptive prompt
+      operationId: generate_img
       requestBody:
         required: true
         content:
@@ -41,64 +41,59 @@ paths:
             schema:
               type: object
               properties:
-                base_directory:
+                prompt:
                   type: string
-                  description: Optional base directory to list files from, defaults to project directory
-                regexp:
-                  type: string
-                  description: Optional regular expression to filter the files
-                limit:
+                  description: artistic description of image to be generated
+                num_outputs:
                   type: integer
-                  description: Optional limit for the number of files to return
-      responses:
-        "200":
-          description: Files listed successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      description: The file path
-                    ctime:
-                      type: string
-                      format: date-time
-                      description: The file creation time
-                    mtime:
-                      type: string
-                      format: date-time
-                      description: The file modification time
-                    size:
-                      type: integer
-                      description: The file size in bytes
-  /get:
-    post:
-      summary: Get the content of a file
-      operationId: get_file
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                filename:
-                  type: string
-                  description: The file name to retrieve the content of
+                  description: Number of image outputs desired
+                  default: 1
+                  maximum: 4
+                  minimum: 1
       responses:
         '200':
-          description: File content retrieved successfully
+          description: Image generation completed successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  content:
-                    type: string
-                    description: The content of the file
+                  output:
+                    type: array
+                    items:
+                      type: string
+                    description: List of generated PNG URLs
+  /mutate_img:
+    post:
+      summary: modify existing PNG images based on descriptive prompt
+      operationId: mutate_img
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                  description: artistic description of image to be generated
+                image:
+                  type: string
+                  description: PNG url of image to modify
+                  format: uri
+      responses:
+        '200':
+          description: Image generation completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  output:
+                    type: array
+                    items:
+                      type: string
+                    description: List of generated PNG URLs
   /repos/{owner}/{repo}/issues:
     get:
       operationId: listRepositoryIssues # Add operationId here
@@ -123,14 +118,14 @@ paths:
             type: string
             enum: [open, closed, all]
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Issue"
+                  $ref: '#/components/schemas/Issue'
     post:
       operationId: createIssue
       summary: Create a new issue for a repository
@@ -186,12 +181,12 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: The details of the issue
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
     put:
       operationId: updateIssue # Add operationId here
       summary: Update an issue for a repository
@@ -233,12 +228,12 @@ paths:
                     - open
                     - closed
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
   /repos/{owner}/{repo}/issues/{issue_number}/comments:
     get:
       operationId: getIssueComments
@@ -263,14 +258,14 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Comment"
+                  $ref: '#/components/schemas/Comment'
     post:
       operationId: commentIssue
       summary: Comment on an issue.
@@ -318,14 +313,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: A list of issues matching the search query
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Issue"
+                  $ref: '#/components/schemas/Issue'
 components:
   schemas:
     Comment:
