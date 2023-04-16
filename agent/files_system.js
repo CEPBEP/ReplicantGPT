@@ -37,6 +37,7 @@ To rename files, use:
 `;
 
 function performOperations(inputText, directoryPath) {
+    const changes = [];
     const lines = inputText.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
@@ -58,6 +59,7 @@ function performOperations(inputText, directoryPath) {
             }
 
             fs.writeFileSync(filePath, fileContents);
+            changes.push({ add: filename });
         } else if (line.startsWith('-- PATCH_START:')) {
             const filename = line.split(':')[1].trim();
             console.log('patching file', filename);
@@ -74,19 +76,24 @@ function performOperations(inputText, directoryPath) {
             const fileContents = fs.readFileSync(filePath, 'utf8');
             const patchedContents = diff.applyPatch(fileContents, patchContents);
             fs.writeFileSync(filePath, patchedContents);
+            changes.push({ add: filename })
         } else if (line.startsWith('-- DELETE:')) {
             const filename = line.split(':')[1].trim();
             console.log('deleting file', filename);
             const filePath = path.join(directoryPath, filename);
             fs.unlinkSync(filePath);
+            changes.push({ rm: filename });
         } else if (line.startsWith('-- RENAME:')) {
             const [oldFilename, newFilename] = line.split(':')[1].trim().split(' ');
             console.log('renaming file', oldFilename, 'to', newFilename);
             const oldFilePath = path.join(directoryPath, oldFilename);
             const newFilePath = path.join(directoryPath, newFilename);
             fs.renameSync(oldFilePath, newFilePath);
+            changes.push({ rm: oldFilename, add: newFilename });
         }
     }
+
+    return changes
 }
 
 module.exports = {
