@@ -12,8 +12,8 @@ import {
   getIssues,
   createIssue,
   updateIssue,
-  closeIssue,
   commentIssue,
+  getComments,
 } from "./logic.js";
 import morgan from "morgan";
 
@@ -197,19 +197,17 @@ app.get(
 app.put(
   "/repos/:owner/:repo/issues/:issue_number",
   asyncHandler(async (req, res) => {
-    const { owner, repo } = req.params;
-    const { title, body, issue_number } = req.body;
-    const issueData = await updateIssue(OWNER, REPO, issue_number, title, body);
-    res.status(200).json(issueData);
-  })
-);
-
-// close issue
-app.patch(
-  "/repos/:owner/:repo/issues/:issue_number",
-  asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
-    const issueData = await closeIssue(OWNER, REPO, issue_number);
+    const { title, body, state } = req.body;
+    console.log(req.body, "body");
+    const issueData = await updateIssue(
+      owner,
+      repo,
+      issue_number,
+      title,
+      body,
+      state
+    );
     res.status(200).json(issueData);
   })
 );
@@ -222,6 +220,16 @@ app.post(
     const { body } = req.body;
     const issueData = await commentIssue(owner, repo, issue_number, body);
     res.status(200).json(issueData);
+  })
+);
+
+// get comments on issue
+app.get(
+  "/repos/:owner/:repo/issues/:issue_number/comments",
+  asyncHandler(async (req, res) => {
+    const { owner, repo, issue_number } = req.params;
+    const comments = await getComments(owner, repo, issue_number);
+    res.status(200).json(comments);
   })
 );
 

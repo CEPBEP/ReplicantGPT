@@ -44,6 +44,23 @@ export async function getIssues(owner, repo, state) {
   return issues_data;
 }
 
+export async function getComments(owner, repo, issue_number) {
+  const comments = await octokit.rest.issues.listComments({
+    owner: owner,
+    repo: repo,
+    issue_number: issue_number,
+  });
+
+  const comments_data = comments.data.map((comment) => {
+    return {
+      id: comment.id,
+      body: comment.body,
+    };
+  });
+
+  return comments_data;
+}
+
 export async function createIssue(owner, repo, title, body) {
   const issue = await octokit.rest.issues.create({
     owner: owner,
@@ -62,31 +79,21 @@ export async function createIssue(owner, repo, title, body) {
   return issue_data;
 }
 
-export async function updateIssue(owner, repo, issue_number, title, body) {
+export async function updateIssue(
+  owner,
+  repo,
+  issue_number,
+  title,
+  body,
+  state
+) {
   const issue = await octokit.rest.issues.update({
     owner: owner,
     repo: repo,
     issue_number: issue_number,
     title: title,
     body: body,
-  });
-
-  const issue_data = {
-    number: issue.data.number,
-    title: issue.data.title,
-    state: issue.data.state,
-    body: issue.data.body,
-  };
-
-  return issue_data;
-}
-
-export async function closeIssue(owner, repo, issue_number) {
-  const issue = await octokit.rest.issues.update({
-    owner: owner,
-    repo: repo,
-    issue_number: issue_number,
-    state: "closed",
+    state: state,
   });
 
   const issue_data = {
