@@ -14,8 +14,8 @@ import {
   getComments,
 } from "./logic.js";
 import morgan from "morgan";
-import { listFiles, getFile } from './filez.js';
-import { runProjectCmd } from './filez.js';
+import { listFiles, getFile } from "./filez.js";
+import { runProjectCmd } from "./filez.js";
 
 dotenv.config();
 
@@ -29,23 +29,29 @@ app.use(morgan("dev")); // Use morgan middleware to log all incoming requests
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
-const OWNER = "cbh123";
-const REPO = "shlinked";
+const owner = "cbh123";
+const repo = "shlinked";
 
 app.use(cors({ origin: "https://chat.openai.com" }));
 app.use(express.json());
 
-app.post('/code', asyncHandler(async (req, res) => {
-  console.log('code', req.body)
-  const { prompt, model = 'gpt-3.5-turbo' } = req.body;
+app.post(
+  "/code",
+  asyncHandler(async (req, res) => {
+    console.log("code", req.body);
+    const { prompt, model = "gpt-3.5-turbo" } = req.body;
 
-  runProjectCmd({ prompt, model }).then(s => {
-    console.log({ 'result': s })
-  }); // FIXME(ja): some way of canceling!
+    runProjectCmd({ prompt, model }).then((s) => {
+      console.log({ result: s });
+    }); // FIXME(ja): some way of canceling!
 
-  res.status(200).json({ status: 'coding has started, the coder will send a PR when it is ready' })
-}))
+    res
+      .status(200)
+      .json({
+        status: "coding has started, the coder will send a PR when it is ready",
+      });
+  })
+);
 
 app.post(
   "/list_files",
@@ -53,19 +59,23 @@ app.post(
     console.log("list", req.body);
     const { base_directory } = req.body;
 
-  const files = await listFiles();
+    const files = await listFiles();
 
-  res.json(files)
-}))
+    res.json(files);
+  })
+);
 
-app.post("/get", asyncHandler(async (req, res) => {
-  console.log("get", req.body)
-  const { filename } = req.body;
+app.post(
+  "/get",
+  asyncHandler(async (req, res) => {
+    console.log("get", req.body);
+    const { filename } = req.body;
 
-  const content = await getFile(filename);
+    const content = await getFile(filename);
 
-  res.json({ content })
-}))
+    res.json({ content });
+  })
+);
 
 app.post(
   "/model",
@@ -158,7 +168,7 @@ app.post(
     const { owner, repo } = req.params;
     const { title, body } = req.body;
     console.log(title, body);
-    const issueData = await createIssue(OWNER, REPO, title, body);
+    const issueData = await createIssue(owner, repo, title, body);
     res.status(200).json(issueData);
   })
 );
@@ -168,7 +178,7 @@ app.get(
   "/repos/:owner/:repo/issues",
   asyncHandler(async (req, res) => {
     const { owner, repo } = req.params;
-    const issueData = await getIssues(OWNER, REPO);
+    const issueData = await getIssues(owner, repo);
     res.status(200).json(issueData);
   })
 );
@@ -178,7 +188,7 @@ app.get(
   "/repos/:owner/:repo/issues/:issue_number",
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
-    const issueData = await getIssue(OWNER, REPO, issue_number);
+    const issueData = await getIssue(owner, repo, issue_number);
 
     res.status(200).json(issueData);
   })
