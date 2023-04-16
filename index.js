@@ -4,9 +4,7 @@ import asyncHandler from "express-async-handler";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import Replicate from "replicate";
 import * as dotenv from "dotenv";
-import { listFiles, runCommand } from "./filez.js";
 import {
   getIssue,
   getIssues,
