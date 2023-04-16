@@ -38,7 +38,7 @@ app.post(
   '/code',
   asyncHandler(async (req, res) => {
     console.log('code', req.body);
-    const { prompt, model = 'gpt-3.5-turbo' } = req.body;
+    const { prompt, model = 'gpt-4' } = req.body;
 
     run({ model, prompt, project_dir }).then((result) =>
       console.log({ result }),
@@ -68,7 +68,7 @@ app.post(
     console.log('get', req.body);
     const { filename } = req.body;
 
-    const content = await getFile(filename, project_dir);
+    const content = await getFile({ filename, project_dir });
 
     res.json({ content });
   }),
