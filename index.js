@@ -14,7 +14,8 @@ import {
   getComments,
 } from './logic.js';
 import morgan from 'morgan';
-import { listFiles, getFile } from './filez.js';
+import { listFiles } from './filez.js';
+import { getFile } from './agent/files_system.js';
 import run from './agent/runner.js';
 
 dotenv.config();
@@ -68,7 +69,7 @@ app.post(
     console.log('get', req.body);
     const { filename } = req.body;
 
-    const content = await getFile(filename);
+    const content = await getFile(filename, project_dir);
 
     res.json({ content });
   }),

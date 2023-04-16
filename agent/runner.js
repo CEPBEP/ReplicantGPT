@@ -25,14 +25,41 @@ const chat = async ({ model, messages }) => {
 };
 
 const run = async ({ model, prompt, project_dir }) => {
-  const messages = [
+  console.log({ model, project_dir });
+  const fileDetails = await files.listFiles({ project_dir });
+  const fileNames = fileDetails.map((file) => file.path);
+  let messages = [
     { role: 'system', content: files.system },
+    { role: 'user', content: 'files:\n' + fileNames.join('\n') },
     { role: 'user', content: prompt },
   ];
-  // todo: add the list of files into the prompt / message history
 
   let message = await chat({ model, messages });
+
+  if (message.content.includes('--CAT:')) {
+    for (const line of message.content.split('\n')) {
+      if (line.startsWith('--CAT:')) {
+        const filename = line.split(':')[1].trim();
+        console.log('catting file', filename);
+        let content = await files.getFile({
+          filename: filename.trim(),
+          project_dir,
+        });
+        content = `${files.file_start(
+          filename.trim(),
+        )}${content}${files.file_end(filename.trim())}`;
+        messages.push({ role: 'user', content });
+        messages.push({
+          role: 'user',
+          content: 'ok, please generate the code',
+        });
+      }
+      message = await chat({ model, messages });
+    }
+  }
+
   messages.push(message);
+
   // todo: if the bot asks for a --CAT: file1, ... return that, and re-run the previous prompt
 
   console.log({ message });
