@@ -8,6 +8,7 @@ const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+
 const chat = async ({ model, messages }) => {
     const logFn = "logs/" + (new Date().toISOString().replace(/:/g, '-') + Math.random().toString(36).substring(7) + '.json');
     await fs.writeFile(logFn, JSON.stringify({ messages, model }, null, 2));
@@ -22,9 +23,11 @@ const run = async ({ model, prompt, projectDir }) => {
         { role: "system", content: files.system },
         { role: "user", content: prompt }
     ]
+    // todo: add the list of files into the prompt / message history
 
     let message = await chat({ model, messages });
     messages.push(message)
+    // todo: if the bot asks for a --CAT: file1, ... return that, and re-run the previous prompt
 
     console.log({ message })
     const changes = files.performOperations(message.content, projectDir);

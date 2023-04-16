@@ -35,9 +35,10 @@ To delete files, use:
 To rename files, use:
 --RENAME: old_filename new_filename
 `
-// You will be given a task and a list of files.  If you need any files you can ask for them using the 'cat' command before you start.
+// You will be given a task and a list of files that already exist.  If you need to see any files ask for them using the 'CAT' command before coding.
 
-// --CAT: filename
+// --CAT: file1
+// --CAT: file2
 // `;
 
 export function performOperations(inputText, directoryPath) {
