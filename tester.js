@@ -4,7 +4,7 @@ import { runProjectCmd } from './filez.js';
 
 const work = async () => {
     //  Don't output any other text before or after the files. ??
-    const changes = await runProjectCmd('node /app/runner.js', {
+    const changes = await runProjectCmd( {
         PROMPT: "Please create a TODO.md to get the first release of the project done",
         MODEL: "gpt-3.5-turbo"
     });

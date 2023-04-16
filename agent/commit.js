@@ -1,5 +1,5 @@
-const { Configuration, OpenAIApi } = require("openai");
-const { performOperations, system } = require("./commit_system.js");
+import { Configuration, OpenAIApi } from "openai";
+import { performOperations, system } from "./commit_system.js";
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -19,7 +19,7 @@ const run = async () => {
 
     const result = completion.data.choices[0].message;
 
-    console.log({result}); 
+    console.log({ result });
     performOperations(result.content, '/project');
 }
 

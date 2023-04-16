@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const diff = require('diff');
+import fs from 'fs';
+import path from 'path';
+import * as diff from 'diff';
 
 
 const file_start = (filename) => `-- FILE_START: ${filename}`;
@@ -9,7 +9,7 @@ const patch_start = (filename) => `-- PATCH_START: ${filename}`;
 const patch_end = (filename) => `-- PATCH_END: ${filename}`;
 
 
-const system = `You are DevGPT, a open source indie developer AI.
+export const system = `You are DevGPT, a open source indie developer AI.
 
 To create or replace entire files, wrap the contents of both files in the strings '${file_start('filename')}' and '${file_end("<filename>")}'.
 
@@ -36,7 +36,7 @@ To rename files, use:
 --RENAME: old_filename new_filename
 `;
 
-function performOperations(inputText, directoryPath) {
+export function performOperations(inputText, directoryPath) {
     const changes = [];
     const lines = inputText.split('\n');
 
@@ -95,8 +95,3 @@ function performOperations(inputText, directoryPath) {
 
     return changes
 }
-
-module.exports = {
-    performOperations,
-    system
-};
