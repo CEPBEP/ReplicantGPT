@@ -38,11 +38,11 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 
 <img width="708" alt="Screenshot 2023-04-16 at 9 25 10 AM" src="https://user-images.githubusercontent.com/14149230/232331746-ee1f9c28-3627-45c7-afb4-7d5048d17baa.png">
 
-## Generate images from text using [ReplicateHQ Stable Diffusion](https://replicate.com)
+## Generate images from text using [Replicate Stable Diffusion](https://replicate.com)
 
 <img src="docs/line.png">
 
-## Modify images using [ReplicateHQ controlnet](https://replicate.com)
+## Modify images using [Replicate controlnet](https://replicate.com)
 
 <img src="docs/color.png>
 
