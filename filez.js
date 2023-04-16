@@ -42,26 +42,8 @@ export async function runProjectCmd(meta, options) {
     const rv = await run({ model: meta.MODEL, prompt: meta.PROMPT, projectDir: project_dir });
     console.log(rv);
     return rv;
-    // const dockerCmd = `docker run ${envString} -v ${project_dir}:/project devy /bin/bash -c "${cmd}"`;
-    // console.log(dockerCmd)
-    // return runCommand(dockerCmd, options);
 }
 
-export async function runProjectCommit(cmd, meta, options) {
-
-    const env = {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-        PROMPT: meta.PROMPT,
-        MODEL: meta.MODEL
-    };
-
-    const envString = Object.entries(env).map(([key, value]) => `-e ${key}="${escaper(value)}"`).join(' ');
-
-    const project_dir = path.join(process.cwd(), 'project');
-    const dockerCmd = `docker run ${envString} -v ${project_dir}:/project devy /bin/bash -c "${cmd}"`;
-    console.log(dockerCmd)
-    return runCommand(dockerCmd, options);
-}
 
 export async function runCommand(cmd, options) {
   return new Promise((resolve, reject) => {
