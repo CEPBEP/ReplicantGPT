@@ -14,8 +14,7 @@ import {
   getComments,
 } from './logic.js';
 import morgan from 'morgan';
-import { listFiles } from './filez.js';
-import { getFile } from './agent/files_system.js';
+import { listFiles, getFile } from './agent/files_system.js';
 import run from './agent/runner.js';
 
 dotenv.config();
