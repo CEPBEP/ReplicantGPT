@@ -16,6 +16,8 @@ import {
   getComments,
 } from "./logic.js";
 import morgan from "morgan";
+import { listFiles, getFile } from './filez.js';
+import { runProjectCmd } from './filez.js';
 
 dotenv.config();
 
@@ -29,39 +31,23 @@ app.use(morgan("dev")); // Use morgan middleware to log all incoming requests
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
 const OWNER = "cbh123";
 const REPO = "shlinked";
 
 app.use(cors({ origin: "https://chat.openai.com" }));
 app.use(express.json());
 
-app.post(
-  "/run",
-  asyncHandler(async (req, res) => {
-    console.log("run", req.body);
-    const { cmd, stdout = true, stderr = false, timeout = 10 } = req.body;
+app.post('/code', asyncHandler(async (req, res) => {
+  console.log('code', req.body)
+  const { prompt, model = 'gpt-3.5-turbo' } = req.body;
 
-    const options = {
-      timeout: timeout * 1000,
-    };
+  runProjectCmd({ prompt, model }).then(s => {
+    console.log({ 'result': s })
+  }); // FIXME(ja): some way of canceling!
 
-    try {
-      const result = await runCommand(cmd, options);
-      res.status(200).json({
-        exit_code: result.exit_code,
-        stdout: stdout ? result.stdout : undefined,
-        stderr: stderr ? result.stderr : undefined,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(error.status).json({
-        error: error.message,
-        stdout: stdout ? error.stdout : undefined,
-        stderr: stderr ? error.stderr : undefined,
-      });
-    }
-  })
-);
+  res.status(200).json({ status: 'coding has started, the coder will send a PR when it is ready' })
+}))
 
 app.post(
   "/list_files",
@@ -69,12 +55,19 @@ app.post(
     console.log("list", req.body);
     const { base_directory } = req.body;
 
-    const files = await listFiles(base_directory);
-    // list files
+  const files = await listFiles();
 
-    res.json(files);
-  })
-);
+  res.json(files)
+}))
+
+app.post("/get", asyncHandler(async (req, res) => {
+  console.log("get", req.body)
+  const { filename } = req.body;
+
+  const content = await getFile(filename);
+
+  res.json({ content })
+}))
 
 app.post(
   "/model",
