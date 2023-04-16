@@ -1,17 +1,21 @@
 # ReplicantGPT
-GPT plugin for creating and managing GitHub projects. Give Replicant an engineering task and it'll create relevant GitHub issues, assign them to coder agents, commit the code changes to main, and then close the issues. 
+
+GPT plugin for creating and managing GitHub projects. Give Replicant an engineering task and it'll create relevant GitHub issues, assign them to coder agents, commit the code changes to main, and then close the issues.
 
 ### Features
+
 - interact with GitHub so it's easy for us humans to work alongside it
 - can read and edit local filesystem
 - live prompt logging
 - see showcase below
 
 ### What's next
+
 - create PRs (it always pushes to main)
 - handle task order. cannot handle multiple agents asynchronously pushing changes
 
 ### Notes
+
 - gpt-3.5 can do this but it's really flaky. gpt-4 consistently understands that we want it to execute commands
 - having a bunch of routes in the openapi can lead to confusion - eg, when we tell it to "assign task to coder" it'll sometimes comment on GH issue saying "this is assigned to @coder" rather than running and commiting the code
 - saying "use the plugin" helps
@@ -19,6 +23,7 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 - history of messages in the chat matters a lot. if it executes correctly the first message, it tends to work the rest of the chat
 
 # Examples
+
 ## Create, show, and comment on issues
 
 <img width="726" alt="Screenshot 2023-04-16 at 10 49 42 AM" src="https://user-images.githubusercontent.com/14149230/232331809-13bb9fbe-877b-4864-946f-049f4028a038.png">
@@ -26,29 +31,40 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 <img width="701" alt="Screenshot 2023-04-16 at 9 25 24 AM" src="https://user-images.githubusercontent.com/14149230/232331765-6c2b733c-d3da-4f5d-99d6-b2fe8c5f6fa0.png">
 
 ## Summarize issue threads
+
 <img width="703" alt="Screenshot 2023-04-16 at 10 50 39 AM" src="https://user-images.githubusercontent.com/14149230/232331874-eda256cc-978d-479e-b792-497eedb0ed85.png">
 
-
 ## List local files
+
 <img width="708" alt="Screenshot 2023-04-16 at 9 25 10 AM" src="https://user-images.githubusercontent.com/14149230/232331746-ee1f9c28-3627-45c7-afb4-7d5048d17baa.png">
 
+## Generate images from text using [ReplicateHQ Stable Diffusion](https://replicate.com)
+
+<img src="docs/line.png">
+
+## Modify images using [ReplicateHQ controlnet](https://replicate.com)
+
+<img src="docs/color.png>
 
 ## Assign coders to implement
 
 #### when it doesn't work...
+
 <img width="733" alt="Screenshot 2023-04-16 at 11 20 05 AM" src="https://user-images.githubusercontent.com/14149230/232333513-221559e2-15e6-430d-9371-2957888cc23c.png">
 
 #### when it does...
+
 <img width="652" alt="Screenshot 2023-04-16 at 9 27 02 AM" src="https://user-images.githubusercontent.com/14149230/232331846-0de83059-09f2-4cb2-a905-3cfa63281387.png">
 
 <img width="745" alt="Screenshot 2023-04-16 at 9 25 46 AM" src="https://user-images.githubusercontent.com/14149230/232331837-bd42eddb-1f72-4423-848d-9f5a93ca5b32.png">
 
 ## Coders commit to main
+
 <img width="742" alt="Screenshot 2023-04-16 at 10 53 05 AM" src="https://user-images.githubusercontent.com/14149230/232332018-5b840b75-5a1a-47a6-a85f-a56d2b1d19fa.png">
 <img width="1590" alt="Screenshot 2023-04-16 at 10 53 47 AM" src="https://user-images.githubusercontent.com/14149230/232332048-ea29bdbd-d1fe-4d9d-9180-4da8a6927857.png">
 
-
 # Behind the scenes...
+
 ### System prompt
 
 ```
@@ -78,6 +94,7 @@ You will be given a task and a list of files that already exist.  If you need to
 ```
 
 ### Eval
+
 ```
    if (line.startsWith('-- FILE_START:')) {
       const filename = line.split(':')[1].trim();
@@ -128,9 +145,10 @@ You will be given a task and a list of files that already exist.  If you need to
       changes.push({ rm: oldFilename, add: newFilename });
     }
   }
-  ```
+```
 
 ### Putting it all together...
+
 ```
 {
   "messages": [
