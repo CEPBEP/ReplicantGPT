@@ -44,7 +44,7 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 
 ## Modify images using [Replicate controlnet](https://replicate.com)
 
-<img src="docs/color.png>
+<img src="docs/color.png">
 
 ## Assign coders to implement
 
