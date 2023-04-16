@@ -54,10 +54,6 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 
 #### when it does...
 
-<img width="652" alt="Screenshot 2023-04-16 at 9 27 02 AM" src="https://user-images.githubusercontent.com/14149230/232331846-0de83059-09f2-4cb2-a905-3cfa63281387.png">
-
-<img width="745" alt="Screenshot 2023-04-16 at 9 25 46 AM" src="https://user-images.githubusercontent.com/14149230/232331837-bd42eddb-1f72-4423-848d-9f5a93ca5b32.png">
-
 ## Coders commit to main
 
 <img width="742" alt="Screenshot 2023-04-16 at 10 53 05 AM" src="https://user-images.githubusercontent.com/14149230/232332018-5b840b75-5a1a-47a6-a85f-a56d2b1d19fa.png">
