@@ -11,6 +11,11 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 - create PRs (it always pushes to main)
 - handle task order. cannot handle multiple agents asynchronously pushing changes
 
+### Notes
+- gpt-3.5 can do this but it's really flaky. gpt-4 consistently understands that we want it to execute commands
+- having a bunch of routes in the openapi can lead to confusion - eg, when we tell it to "assign task to coder" it'll sometimes comment on GH issue saying "this is assigned to @coder" rather than running and commiting the code
+- this is a fun new UI for interacting with GH issues
+- history of messages in the chat matters a lot. if it executes correctly the first message, it tends to work the rest of the chat
 
 ## Create, show, and comment on issues
 
