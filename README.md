@@ -1,8 +1,7 @@
 # ReplicantGPT
 
 
-## List local files
-<img width="708" alt="Screenshot 2023-04-16 at 9 25 10 AM" src="https://user-images.githubusercontent.com/14149230/232331746-ee1f9c28-3627-45c7-afb4-7d5048d17baa.png">
+
 
 ## Create, show, and comment on issues
 
@@ -12,6 +11,11 @@
 
 ## Summarize issue threads
 <img width="703" alt="Screenshot 2023-04-16 at 10 50 39 AM" src="https://user-images.githubusercontent.com/14149230/232331874-eda256cc-978d-479e-b792-497eedb0ed85.png">
+
+
+## List local files
+<img width="708" alt="Screenshot 2023-04-16 at 9 25 10 AM" src="https://user-images.githubusercontent.com/14149230/232331746-ee1f9c28-3627-45c7-afb4-7d5048d17baa.png">
+
 
 ## Assign coders to implement
 
