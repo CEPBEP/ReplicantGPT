@@ -17,6 +17,7 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 - this is a fun new UI for interacting with GH issues
 - history of messages in the chat matters a lot. if it executes correctly the first message, it tends to work the rest of the chat
 
+# Examples
 ## Create, show, and comment on issues
 
 <img width="726" alt="Screenshot 2023-04-16 at 10 49 42 AM" src="https://user-images.githubusercontent.com/14149230/232331809-13bb9fbe-877b-4864-946f-049f4028a038.png">
