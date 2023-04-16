@@ -1,6 +1,6 @@
-const { Configuration, OpenAIApi } = require("openai");
-const files = require("./files_system.js");
-const commits = require('./commit_system.js')
+import { Configuration, OpenAIApi } from "openai";
+import * as files from "./files_system.js";
+import {performCommit, commitInstructions} from './commit_system.js';
 
 
 const configuration = new Configuration({
@@ -8,34 +8,34 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const run = async () => {
+const run = async ({ model, prompt, projectDir }) => {
 
     const completion = await openai.createChatCompletion({
-        model: process.env.MODEL,
+        model,
         messages: [{
             role: "system", content: files.system,
         }, {
-            role: "user", content: process.env.PROMPT,
+            role: "user", content: prompt,
         }],
     });
 
     const changeTxt = completion.data.choices[0].message.content;
-    const changes = files.performOperations(changeTxt, '/project');
+    const changes = files.performOperations(changeTxt, projectDir);
     console.log(changes);
 
     const results = await openai.createChatCompletion({
-        model: process.env.MODEL,
+        model: model,
         messages: [
             { role: "system", content: files.system, },
-            { role: "user", content: process.env.PROMPT, },
+            { role: "user", content: prompt, },
             { role: 'assistant', content: changeTxt },
-            { role: 'user', content: commits.commitInstructions }
+            { role: 'user', content: commitInstructions }
         ],
     });
 
     const commitMessage = results.data.choices[0].message.content;
 
-    await commits.performCommit({ message: commitMessage, changes }, '/project');
+    await performCommit({ message: commitMessage, changes }, projectDir);
 }
 
-run();
+export default run;
