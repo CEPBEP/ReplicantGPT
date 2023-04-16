@@ -1,6 +1,5 @@
 # gha
 
-
 ## Script
 
 User: Let's create a new project
@@ -15,5 +14,3 @@ GHM: Ok, I'll create a new Project for you called llamaparty
 - vercel deploy?
 
 Tell me more about llamaparty - what should we build
-
-
