@@ -7,17 +7,23 @@ import { dirname } from "path";
 import Replicate from "replicate";
 import * as dotenv from "dotenv";
 import { listFiles, runCommand } from "./filez.js";
-import { getIssue } from "./logic.js";
+import { getIssue, getIssues } from "./logic.js";
+import morgan from "morgan";
 
 dotenv.config();
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-});
+// const replicate = new Replicate({
+//   auth: process.env.REPLICATE_API_TOKEN,
+// });
 
 const app = express();
+app.use(morgan("dev")); // Use morgan middleware to log all incoming requests
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const OWNER = "cbh123";
+const REPO = "shlinked";
 
 app.use(cors({ origin: "https://chat.openai.com" }));
 app.use(express.json());
@@ -145,6 +151,15 @@ app.post(
 
 // GH issue routes
 app.get(
+  "/repos/:owner/:repo/issues",
+  asyncHandler(async (req, res) => {
+    const { owner, repo } = req.params;
+    const issueData = await getIssues(owner, repo);
+    res.status(200).json(issueData);
+  })
+);
+
+app.get(
   "/repos/:owner/:repo/issues/:issue_number",
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
@@ -174,6 +189,7 @@ app.get(
   "/openapi.yaml",
   asyncHandler(async (req, res) => {
     const filename = path.join(__dirname, "openapi.yaml");
+    console.log("returning yaml");
     res.sendFile(filename, { headers: { "Content-Type": "text/yaml" } });
   })
 );
