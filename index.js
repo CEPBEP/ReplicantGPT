@@ -7,7 +7,14 @@ import { dirname } from "path";
 import Replicate from "replicate";
 import * as dotenv from "dotenv";
 import { listFiles, runCommand } from "./filez.js";
-import { getIssue, getIssues } from "./logic.js";
+import {
+  getIssue,
+  getIssues,
+  createIssue,
+  updateIssue,
+  closeIssue,
+  commentIssue,
+} from "./logic.js";
 import morgan from "morgan";
 
 dotenv.config();
@@ -149,22 +156,71 @@ app.post(
   })
 );
 
-// GH issue routes
-app.get(
+/**
+ * GitHub issue routes
+ **/
+
+// create issue
+app.post(
   "/repos/:owner/:repo/issues",
   asyncHandler(async (req, res) => {
     const { owner, repo } = req.params;
-    const issueData = await getIssues(owner, repo);
+    const { title, body } = req.body;
+    console.log(title, body);
+    const issueData = await createIssue(OWNER, REPO, title, body);
     res.status(200).json(issueData);
   })
 );
 
+// get issues
+app.get(
+  "/repos/:owner/:repo/issues",
+  asyncHandler(async (req, res) => {
+    const { owner, repo } = req.params;
+    const issueData = await getIssues(OWNER, REPO);
+    res.status(200).json(issueData);
+  })
+);
+
+// get issue
 app.get(
   "/repos/:owner/:repo/issues/:issue_number",
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
-    const issueData = await getIssue(owner, repo, issue_number);
+    const issueData = await getIssue(OWNER, REPO, issue_number);
 
+    res.status(200).json(issueData);
+  })
+);
+
+// update issue
+app.put(
+  "/repos/:owner/:repo/issues/:issue_number",
+  asyncHandler(async (req, res) => {
+    const { owner, repo } = req.params;
+    const { title, body, issue_number } = req.body;
+    const issueData = await updateIssue(OWNER, REPO, issue_number, title, body);
+    res.status(200).json(issueData);
+  })
+);
+
+// close issue
+app.patch(
+  "/repos/:owner/:repo/issues/:issue_number",
+  asyncHandler(async (req, res) => {
+    const { owner, repo, issue_number } = req.params;
+    const issueData = await closeIssue(OWNER, REPO, issue_number);
+    res.status(200).json(issueData);
+  })
+);
+
+// comment on issue
+app.post(
+  "/repos/:owner/:repo/issues/:issue_number/comments",
+  asyncHandler(async (req, res) => {
+    const { owner, repo, issue_number } = req.params;
+    const { body } = req.body;
+    const issueData = await commentIssue(owner, repo, issue_number, body);
     res.status(200).json(issueData);
   })
 );
@@ -189,7 +245,6 @@ app.get(
   "/openapi.yaml",
   asyncHandler(async (req, res) => {
     const filename = path.join(__dirname, "openapi.yaml");
-    console.log("returning yaml");
     res.sendFile(filename, { headers: { "Content-Type": "text/yaml" } });
   })
 );
