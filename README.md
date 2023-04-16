@@ -14,8 +14,10 @@
 <img width="703" alt="Screenshot 2023-04-16 at 10 50 39 AM" src="https://user-images.githubusercontent.com/14149230/232331874-eda256cc-978d-479e-b792-497eedb0ed85.png">
 
 ## Assign coders to implement
-<img width="745" alt="Screenshot 2023-04-16 at 9 25 46 AM" src="https://user-images.githubusercontent.com/14149230/232331837-bd42eddb-1f72-4423-848d-9f5a93ca5b32.png">
+
 <img width="652" alt="Screenshot 2023-04-16 at 9 27 02 AM" src="https://user-images.githubusercontent.com/14149230/232331846-0de83059-09f2-4cb2-a905-3cfa63281387.png">
+
+<img width="745" alt="Screenshot 2023-04-16 at 9 25 46 AM" src="https://user-images.githubusercontent.com/14149230/232331837-bd42eddb-1f72-4423-848d-9f5a93ca5b32.png">
 
 ## Coders commit to main
 <img width="742" alt="Screenshot 2023-04-16 at 10 53 05 AM" src="https://user-images.githubusercontent.com/14149230/232332018-5b840b75-5a1a-47a6-a85f-a56d2b1d19fa.png">
