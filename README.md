@@ -46,6 +46,10 @@ GPT plugin for creating and managing GitHub projects. Give Replicant an engineer
 
 <img src="docs/color.png">
 
+## Insert the image into my webpage
+
+<img src="docs/website.png">
+
 ## Assign coders to implement
 
 #### when it doesn't work...
