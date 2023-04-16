@@ -2,8 +2,9 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 // Recursive function to list files in a directory
-export async function listFiles({ project_dir }) {
+export async function listFiles({ project_dir } = {}) {
   try {
+    console.log(project_dir);
     const items = await fs.readdir(project_dir);
     const fileDetails = [];
 
@@ -19,7 +20,7 @@ export async function listFiles({ project_dir }) {
           size: stats.size,
         });
       } else if (stats.isDirectory()) {
-        const nestedFiles = await listFiles(itemPath);
+        const nestedFiles = await listFiles({ project_dir: itemPath });
         fileDetails.push(...nestedFiles);
       }
     }

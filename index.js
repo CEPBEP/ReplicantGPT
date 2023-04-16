@@ -29,8 +29,6 @@ app.use(morgan('dev')); // Use morgan middleware to log all incoming requests
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const OWNER = 'cbh123';
-const REPO = 'shlinked';
 const project_dir = path.join(process.cwd(), 'project');
 
 app.use(cors({ origin: 'https://chat.openai.com' }));
