@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import * as diff from "diff";
+import fs from 'fs';
+import path from 'path';
+import * as diff from 'diff';
 
 const file_start = (filename) => `-- FILE_START: ${filename}`;
 const file_end = (filename) => `-- FILE_END: ${filename}`;
@@ -10,24 +10,24 @@ const patch_end = (filename) => `-- PATCH_END: ${filename}`;
 export const system = `You are DevGPT, a open source indie developer AI.
 
 To create or replace entire files, wrap the contents of both files in the strings '${file_start(
-  "filename"
-)}' and '${file_end("<filename>")}'.
+  'filename',
+)}' and '${file_end('<filename>')}'.
 
-${file_start("DEMO")}
+${file_start('DEMO')}
 Demo File
 Name:
 Last Line of Demo File
-${file_end("DEMO")}
+${file_end('DEMO')}
 
 To patch files, return a diff of the file that can be applied using the 'patch' command.
 
-${patch_start("DEMO")}
+${patch_start('DEMO')}
 @@ -1,3 +1,3 @@
  Demo File
 -Name:
 +Name: DevGPT
  Last Line of Demo File
-${patch_end("DEMO")}
+${patch_end('DEMO')}
 
 To delete files, use:
 --DELETE: DEMO
@@ -54,54 +54,54 @@ export function performOperations(inputText, project_dir) {
   }
 
   const changes = [];
-  const lines = inputText.split("\n");
+  const lines = inputText.split('\n');
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     console.log(line);
 
-    if (line.startsWith("-- FILE_START:")) {
-      const filename = line.split(":")[1].trim();
-      console.log("creating file", filename);
+    if (line.startsWith('-- FILE_START:')) {
+      const filename = line.split(':')[1].trim();
+      console.log('creating file', filename);
       const filePath = path.join(project_dir, filename);
       console.log(filePath);
-      let fileContents = "";
+      let fileContents = '';
 
       i++;
 
-      while (i < lines.length && !lines[i].startsWith("-- FILE_END:")) {
-        fileContents += lines[i] + "\n";
+      while (i < lines.length && !lines[i].startsWith('-- FILE_END:')) {
+        fileContents += lines[i] + '\n';
         i++;
       }
 
       write(filePath, fileContents);
       changes.push({ add: filename });
-    } else if (line.startsWith("-- PATCH_START:")) {
-      const filename = line.split(":")[1].trim();
-      console.log("patching file", filename);
+    } else if (line.startsWith('-- PATCH_START:')) {
+      const filename = line.split(':')[1].trim();
+      console.log('patching file', filename);
       const filePath = path.join(project_dir, filename);
-      let patchContents = "";
+      let patchContents = '';
 
       i++;
 
-      while (i < lines.length && !lines[i].startsWith("-- PATCH_END:")) {
-        patchContents += lines[i] + "\n";
+      while (i < lines.length && !lines[i].startsWith('-- PATCH_END:')) {
+        patchContents += lines[i] + '\n';
         i++;
       }
 
-      const fileContents = fs.readFileSync(filePath, "utf8");
+      const fileContents = fs.readFileSync(filePath, 'utf8');
       const patchedContents = diff.applyPatch(fileContents, patchContents);
       write(filePath, patchedContents);
       changes.push({ add: filename });
-    } else if (line.startsWith("-- DELETE:")) {
-      const filename = line.split(":")[1].trim();
-      console.log("deleting file", filename);
+    } else if (line.startsWith('-- DELETE:')) {
+      const filename = line.split(':')[1].trim();
+      console.log('deleting file', filename);
       const filePath = path.join(project_dir, filename);
       fs.unlinkSync(filePath);
       changes.push({ rm: filename });
-    } else if (line.startsWith("-- RENAME:")) {
-      const [oldFilename, newFilename] = line.split(":")[1].trim().split(" ");
-      console.log("renaming file", oldFilename, "to", newFilename);
+    } else if (line.startsWith('-- RENAME:')) {
+      const [oldFilename, newFilename] = line.split(':')[1].trim().split(' ');
+      console.log('renaming file', oldFilename, 'to', newFilename);
       const oldFilePath = path.join(project_dir, oldFilename);
       const newFilePath = path.join(project_dir, newFilename);
       fs.renameSync(oldFilePath, newFilePath);

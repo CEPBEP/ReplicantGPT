@@ -1,5 +1,5 @@
-import { Configuration, OpenAIApi } from "openai";
-import { performOperations, system } from "./commit_system.js";
+import { Configuration, OpenAIApi } from 'openai';
+import { performOperations, system } from './commit_system.js';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,11 +11,11 @@ const run = async () => {
     model: process.env.MODEL,
     messages: [
       {
-        role: "system",
+        role: 'system',
         content: system,
       },
       {
-        role: "user",
+        role: 'user',
         content: process.env.PROMPT,
       },
     ],
@@ -24,7 +24,7 @@ const run = async () => {
   const result = completion.data.choices[0].message;
 
   console.log({ result });
-  performOperations(result.content, "/project");
+  performOperations(result.content, '/project');
 };
 
 run();

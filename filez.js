@@ -1,5 +1,5 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Function to list files in a directory
 export async function listFiles({ project_dir }) {
@@ -27,5 +27,5 @@ export async function listFiles({ project_dir }) {
 
 export async function getFile({ filename, project_id }) {
   filename = path.join(project_dir, filename);
-  return await fs.readFile(filename, "utf8");
+  return await fs.readFile(filename, 'utf8');
 }
