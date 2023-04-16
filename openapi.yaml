@@ -6,10 +6,10 @@ info:
 servers:
   - url: http://localhost:5003
 paths:
-  /run:
+  /code:
     post:
-      summary: Run a shell command
-      operationId: run_cmd
+      summary: Update code in project
+      operationId: code
       requestBody:
         required: true
         content:
@@ -17,54 +17,19 @@ paths:
             schema:
               type: object
               properties:
-                cmd:
+                prompt:
                   type: string
-                  description: The shell command to run
-                stdout:
-                  type: boolean
-                  default: true
-                  description: Return stdout in the response
-                stderr:
-                  type: boolean
-                  default: false
-                  description: Return stderr in the response
-                timeout:
-                  type: integer
-                  default: 10
-                  description: Timeout for the command execution in seconds
+                  description: Prompt for code tasking to be assigned to coder, do not micromanage
       responses:
         '200':
-          description: Command executed successfully
+          description: Coding Task Started
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  exit_code:
-                    type: integer
-                    description: The exit code of the command
-                  stdout:
-                    type: string
-                    description: The stdout of the command, if requested
-                  stderr:
-                    type: string
-                    description: The stderr of the command, if requested
-        '408':
-          description: Command execution timed out
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: The error message
-                  stdout:
-                    type: string
-                    description: The stdout of the command, if available
-                  stderr:
-                    type: string
-                    description: The stderr of the command, if available
+                  success:
+                    type: boolean
   /list_files:
     post:
       summary: List files in a directory
@@ -109,20 +74,10 @@ paths:
                     size:
                       type: integer
                       description: The file size in bytes
-        '400':
-          description: Invalid base directory
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: The error message
-  /create_update_file:
+  /get:
     post:
-      operationId: create_update_file
-      summary: Create or update a file
+      summary: Get the content of a file
+      operationId: get_file
       requestBody:
         required: true
         content:
@@ -130,75 +85,17 @@ paths:
             schema:
               type: object
               properties:
-                path:
+                filename:
                   type: string
-                  description: The full path of the file to create or update
-                content:
-                  type: string
-                  description: The content to write to the file
+                  description: The file name to retrieve the content of
       responses:
         '200':
-          description: File created or updated successfully
+          description: File content retrieved successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  message:
+                  content:
                     type: string
-                    description: The success message
-        '500':
-          description: Error creating or updating the file
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: The error message
-  /delete_file:
-    post:
-      operationId: delete_file
-      summary: Delete a file
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                path:
-                  type: string
-                  description: The full path of the file to delete
-      responses:
-        '200':
-          description: File deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: The success message
-        '400':
-          description: Invalid file path
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: The error message
-        '500':
-          description: Error deleting the file
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: The error message
+                    description: The content of the file

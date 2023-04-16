@@ -36,5 +36,6 @@ export async function performCommit({ message, changes }, directoryPath) {
 
     const msg = '"' + message.replace(/"/g, '\\"') + '"';
     await git('commit', '-m', msg);
+    await git('push', 'origin', 'main');
 }
 

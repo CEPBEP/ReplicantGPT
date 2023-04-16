@@ -3,13 +3,15 @@ import path from 'path';
 import { exec } from 'child_process';
 import run from './agent/runner.js';
 
+const project_dir = path.join(process.cwd(), 'project');
+
 // Function to list files in a directory
-export async function listFiles(directoryPath) {
+export async function listFiles() {
     try {
-        const items = await fs.readdir(directoryPath);
+        const items = await fs.readdir(project_dir);
         const fileDetails = [];
         for (const item of items) {
-            const itemPath = path.join(directoryPath, item);
+            const itemPath = path.join(project_dir, item);
             const stats = await fs.stat(itemPath);
             if (stats.isFile()) {
                 fileDetails.push({
@@ -27,25 +29,19 @@ export async function listFiles(directoryPath) {
     }
 }
 
+export async function getFile(filename) {
+    filename = path.join(project_dir, filename);
+    return await fs.readFile(filename, 'utf8');
+}
+
+
 const escaper = (str) => str.replace(/"/g, '\\"');
 
-export async function runProjectCmd(meta, options) {
-
-    const env = {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-        PROMPT: meta.PROMPT,
-        MODEL: meta.MODEL
-    };
-
-    const envString = Object.entries(env).map(([key, value]) => `-e ${key}="${escaper(value)}"`).join(' ');
-
-    const project_dir = path.join(process.cwd(), 'project');
-
-    const rv = await run({ model: meta.MODEL, prompt: meta.PROMPT, projectDir: project_dir });
+export async function runProjectCmd({ model, prompt }, options) {
+    const rv = await run({ model, prompt, projectDir: project_dir });
     console.log(rv);
     return rv;
 }
-
 
 export async function runCommand(cmd, options) {
     return new Promise((resolve, reject) => {

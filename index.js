@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import Replicate from 'replicate'
 import * as dotenv from 'dotenv'
-import { listFiles, runCommand } from './filez.js';
+import { listFiles, getFile } from './filez.js';
+import { runProjectCmd } from './filez.js';
 
 dotenv.config()
 
@@ -21,107 +22,33 @@ const __dirname = dirname(__filename)
 app.use(cors({ origin: 'https://chat.openai.com' }))
 app.use(express.json())
 
-app.post('/run', asyncHandler(async (req, res) => {
-  console.log('run', req.body)
-  const { cmd, stdout = true, stderr = false, timeout = 10 } = req.body;
+app.post('/code', asyncHandler(async (req, res) => {
+  console.log('code', req.body)
+  const { prompt, model = 'gpt-3.5-turbo' } = req.body;
 
-  const options = {
-    timeout: timeout * 1000,
-  };
+  runProjectCmd({ prompt, model }).then(s => {
+    console.log({ 'result': s })
+  }); // FIXME(ja): some way of canceling!
 
-  try {
-    const result = await runCommand(cmd, options);
-    res.status(200).json({
-      exit_code: result.exit_code,
-      stdout: stdout ? result.stdout : undefined,
-      stderr: stderr ? result.stderr : undefined,
-    });
-  } catch (error) {
-    console.log(error)
-    res.status(error.status).json({
-      error: error.message,
-      stdout: stdout ? error.stdout : undefined,
-      stderr: stderr ? error.stderr : undefined,
-    });
-  }
+  res.status(200).json({ status: 'coding has started, the coder will send a PR when it is ready' })
 }))
 
 app.post("/list_files", asyncHandler(async (req, res) => {
   console.log("list", req.body)
   const { base_directory } = req.body;
 
-  const files = await listFiles(base_directory);
-  // list files
+  const files = await listFiles();
 
   res.json(files)
 }))
 
-app.post('/model', asyncHandler(async (req, res) => {
-  console.log('model', req.body)
-  const { username, model } = req.body
-  const response = await replicate.models.get(username, model)
-  const output = {
-    url: response.url,
-    version: response.latest_version.id,
-    description: response.description,
-    schema: response.latest_version.openapi_schema
-  }
-  res.status(200).json(output)
-}))
+app.post("/get", asyncHandler(async (req, res) => {
+  console.log("get", req.body)
+  const { filename } = req.body;
 
-app.post('/collections', asyncHandler(async (req, res) => {
-  console.log('collections')
-  res.status(200).json([
-    {
-      slug: 'image-to-text',
-      description: 'Models that generate images from text prompts'
-    },
-    {
-      slug: 'audio-generation',
-      description: 'Models to generate and modify audio'
-    },
-    {
-      slug: 'diffusion-models',
-      description: 'Image and video generation models trained with diffusion processes'
-    },
-    {
-      slug: 'image-restoration',
-      description: 'Models that improve or restore images by deblurring, colorization, and removing noise'
-    },
-    {
-      slug: 'ml-makeovers',
-      description: 'Models that let you change facial features'
-    },
-    {
-      slug: 'super-resolution',
-      description: 'Upscaling models that create high-quality images from low-quality images'
-    },
-    {
-      slug: 'text-to-video',
-      description: 'Models that create and edit videos'
-    },
-    {
-      slug: 'style-transfer',
-      description: 'Models that transfer the style of one image to another'
-    },
-  ])
-}))
+  const content = await getFile(filename);
 
-app.post('/collection', asyncHandler(async (req, res) => {
-  console.log('collection', req.body)
-  const { collection_slug } = req.body
-  const response = await replicate.collections.get(collection_slug)
-  const models = response.models.map((model) => {
-    return {
-      url: model.url,
-      username: model.owner,
-      model: model.name,
-      version: model.latest_version.id,
-      description: model.description
-    }
-  })
-
-  res.status(200).json(models)
+  res.json({ content })
 }))
 
 app.get('/logo.png', asyncHandler(async (req, res) => {
