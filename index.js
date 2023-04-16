@@ -14,8 +14,8 @@ import {
   getComments,
 } from "./logic.js";
 import morgan from "morgan";
-import { listFiles, getFile } from "./filez.js";
-import { runProjectCmd } from "./filez.js";
+import { listFiles, getFile } from './filez.js';
+import run from './agent/runner.js';
 
 dotenv.config();
 
@@ -29,8 +29,9 @@ app.use(morgan("dev")); // Use morgan middleware to log all incoming requests
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const owner = "cbh123";
-const repo = "shlinked";
+const OWNER = "cbh123";
+const REPO = "shlinked";
+const project_dir = path.join(process.cwd(), 'project');
 
 app.use(cors({ origin: "https://chat.openai.com" }));
 app.use(express.json());
@@ -41,9 +42,7 @@ app.post(
     console.log("code", req.body);
     const { prompt, model = "gpt-3.5-turbo" } = req.body;
 
-    runProjectCmd({ prompt, model }).then((s) => {
-      console.log({ result: s });
-    }); // FIXME(ja): some way of canceling!
+    run({ model, prompt, project_dir }).then(result => console.log({ result }))
 
     res
       .status(200)
@@ -59,11 +58,10 @@ app.post(
     console.log("list", req.body);
     const { base_directory } = req.body;
 
-    const files = await listFiles();
+    const files = await listFiles({ project_dir });
 
-    res.json(files);
-  })
-);
+    res.json(files)
+  }))
 
 app.post(
   "/get",

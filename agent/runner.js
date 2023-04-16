@@ -18,7 +18,7 @@ const chat = async ({ model, messages }) => {
     return message;
 }
 
-const run = async ({ model, prompt, projectDir }) => {
+const run = async ({ model, prompt, project_dir }) => {
     const messages = [
         { role: "system", content: files.system },
         { role: "user", content: prompt }
@@ -30,14 +30,17 @@ const run = async ({ model, prompt, projectDir }) => {
     // todo: if the bot asks for a --CAT: file1, ... return that, and re-run the previous prompt
 
     console.log({ message })
-    const changes = files.performOperations(message.content, projectDir);
+    const changes = files.performOperations(message.content, project_dir);
     console.log({ changes });
 
+    if (changes.length === 0) {
+        return;
+    }
     messages.push({ role: 'user', content: commitInstructions });
 
     message = await chat({ model, messages });
 
-    await performCommit({ message: message.content, changes }, projectDir);
+    await performCommit({ message: message.content, changes }, project_dir);
 }
 
 export default run;
