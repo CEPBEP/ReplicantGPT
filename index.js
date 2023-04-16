@@ -14,8 +14,8 @@ import {
   getComments,
 } from "./logic.js";
 import morgan from "morgan";
-import { listFiles, getFile } from './filez.js';
-import run from './agent/runner.js';
+import { listFiles, getFile } from "./filez.js";
+import run from "./agent/runner.js";
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ const __dirname = dirname(__filename);
 
 const OWNER = "cbh123";
 const REPO = "shlinked";
-const project_dir = path.join(process.cwd(), 'project');
+const project_dir = path.join(process.cwd(), "project");
 
 app.use(cors({ origin: "https://chat.openai.com" }));
 app.use(express.json());
@@ -42,13 +42,13 @@ app.post(
     console.log("code", req.body);
     const { prompt, model = "gpt-3.5-turbo" } = req.body;
 
-    run({ model, prompt, project_dir }).then(result => console.log({ result }))
+    run({ model, prompt, project_dir }).then((result) =>
+      console.log({ result })
+    );
 
-    res
-      .status(200)
-      .json({
-        status: "coding has started, the coder will send a PR when it is ready",
-      });
+    res.status(200).json({
+      status: "coding has started, the coder will send a PR when it is ready",
+    });
   })
 );
 
@@ -60,8 +60,9 @@ app.post(
 
     const files = await listFiles({ project_dir });
 
-    res.json(files)
-  }))
+    res.json(files);
+  })
+);
 
 app.post(
   "/get",
