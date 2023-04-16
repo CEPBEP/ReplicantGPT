@@ -1,6 +1,15 @@
 # ReplicantGPT
+GPT plugin for creating and managing GitHub projects. Give Replicant an engineering task and it'll create relevant GitHub issues, assign them to coder agents, commit the code changes to main, and then close the issues. 
 
+### Features
+- interact with GitHub so it's easy for us humans to work alongside it
+- can read and edit local filesystem
+- live prompt logging
+- see showcase below
 
+### What's next
+- create PRs (it always pushes to main)
+- handle task order. cannot handle multiple agents asynchronously pushing changes
 
 
 ## Create, show, and comment on issues
