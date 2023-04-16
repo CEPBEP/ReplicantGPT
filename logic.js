@@ -1,11 +1,11 @@
-import { Octokit, App } from "octokit";
-import * as dotenv from "dotenv";
+import { Octokit, App } from 'octokit';
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 if (!process.env.GITHUB_TOKEN) {
-  console.error("GITHUB_TOKEN is not set");
+  console.error('GITHUB_TOKEN is not set');
   process.exit(1);
 }
 
@@ -85,7 +85,7 @@ export async function updateIssue(
   issue_number,
   title,
   body,
-  state
+  state,
 ) {
   const issue = await octokit.rest.issues.update({
     owner: owner,

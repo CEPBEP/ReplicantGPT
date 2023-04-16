@@ -1,10 +1,10 @@
-import express from "express";
-import cors from "cors";
-import asyncHandler from "express-async-handler";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import * as dotenv from "dotenv";
+import express from 'express';
+import cors from 'cors';
+import asyncHandler from 'express-async-handler';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import * as dotenv from 'dotenv';
 import {
   getIssue,
   getIssues,
@@ -12,10 +12,10 @@ import {
   updateIssue,
   commentIssue,
   getComments,
-} from "./logic.js";
-import morgan from "morgan";
-import { listFiles, getFile } from "./filez.js";
-import run from "./agent/runner.js";
+} from './logic.js';
+import morgan from 'morgan';
+import { listFiles, getFile } from './filez.js';
+import run from './agent/runner.js';
 
 dotenv.config();
 
@@ -24,62 +24,62 @@ dotenv.config();
 // });
 
 const app = express();
-app.use(morgan("dev")); // Use morgan middleware to log all incoming requests
+app.use(morgan('dev')); // Use morgan middleware to log all incoming requests
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const OWNER = "cbh123";
-const REPO = "shlinked";
-const project_dir = path.join(process.cwd(), "project");
+const OWNER = 'cbh123';
+const REPO = 'shlinked';
+const project_dir = path.join(process.cwd(), 'project');
 
-app.use(cors({ origin: "https://chat.openai.com" }));
+app.use(cors({ origin: 'https://chat.openai.com' }));
 app.use(express.json());
 
 app.post(
-  "/code",
+  '/code',
   asyncHandler(async (req, res) => {
-    console.log("code", req.body);
-    const { prompt, model = "gpt-3.5-turbo" } = req.body;
+    console.log('code', req.body);
+    const { prompt, model = 'gpt-3.5-turbo' } = req.body;
 
     run({ model, prompt, project_dir }).then((result) =>
-      console.log({ result })
+      console.log({ result }),
     );
 
     res.status(200).json({
-      status: "coding has started, the coder will send a PR when it is ready",
+      status: 'coding has started, the coder will send a PR when it is ready',
     });
-  })
+  }),
 );
 
 app.post(
-  "/list_files",
+  '/list_files',
   asyncHandler(async (req, res) => {
-    console.log("list", req.body);
+    console.log('list', req.body);
     const { base_directory } = req.body;
 
     const files = await listFiles({ project_dir });
 
     res.json(files);
-  })
+  }),
 );
 
 app.post(
-  "/get",
+  '/get',
   asyncHandler(async (req, res) => {
-    console.log("get", req.body);
+    console.log('get', req.body);
     const { filename } = req.body;
 
     const content = await getFile(filename);
 
     res.json({ content });
-  })
+  }),
 );
 
 app.post(
-  "/model",
+  '/model',
   asyncHandler(async (req, res) => {
-    console.log("model", req.body);
+    console.log('model', req.body);
     const { username, model } = req.body;
     const response = await replicate.models.get(username, model);
     const output = {
@@ -89,57 +89,57 @@ app.post(
       schema: response.latest_version.openapi_schema,
     };
     res.status(200).json(output);
-  })
+  }),
 );
 
 app.post(
-  "/collections",
+  '/collections',
   asyncHandler(async (req, res) => {
-    console.log("collections");
+    console.log('collections');
     res.status(200).json([
       {
-        slug: "image-to-text",
-        description: "Models that generate images from text prompts",
+        slug: 'image-to-text',
+        description: 'Models that generate images from text prompts',
       },
       {
-        slug: "audio-generation",
-        description: "Models to generate and modify audio",
+        slug: 'audio-generation',
+        description: 'Models to generate and modify audio',
       },
       {
-        slug: "diffusion-models",
+        slug: 'diffusion-models',
         description:
-          "Image and video generation models trained with diffusion processes",
+          'Image and video generation models trained with diffusion processes',
       },
       {
-        slug: "image-restoration",
+        slug: 'image-restoration',
         description:
-          "Models that improve or restore images by deblurring, colorization, and removing noise",
+          'Models that improve or restore images by deblurring, colorization, and removing noise',
       },
       {
-        slug: "ml-makeovers",
-        description: "Models that let you change facial features",
+        slug: 'ml-makeovers',
+        description: 'Models that let you change facial features',
       },
       {
-        slug: "super-resolution",
+        slug: 'super-resolution',
         description:
-          "Upscaling models that create high-quality images from low-quality images",
+          'Upscaling models that create high-quality images from low-quality images',
       },
       {
-        slug: "text-to-video",
-        description: "Models that create and edit videos",
+        slug: 'text-to-video',
+        description: 'Models that create and edit videos',
       },
       {
-        slug: "style-transfer",
-        description: "Models that transfer the style of one image to another",
+        slug: 'style-transfer',
+        description: 'Models that transfer the style of one image to another',
       },
     ]);
-  })
+  }),
 );
 
 app.post(
-  "/collection",
+  '/collection',
   asyncHandler(async (req, res) => {
-    console.log("collection", req.body);
+    console.log('collection', req.body);
     const { collection_slug } = req.body;
     const response = await replicate.collections.get(collection_slug);
     const models = response.models.map((model) => {
@@ -153,7 +153,7 @@ app.post(
     });
 
     res.status(200).json(models);
-  })
+  }),
 );
 
 /**
@@ -162,104 +162,104 @@ app.post(
 
 // create issue
 app.post(
-  "/repos/:owner/:repo/issues",
+  '/repos/:owner/:repo/issues',
   asyncHandler(async (req, res) => {
     const { owner, repo } = req.params;
     const { title, body } = req.body;
     console.log(title, body);
     const issueData = await createIssue(owner, repo, title, body);
     res.status(200).json(issueData);
-  })
+  }),
 );
 
 // get issues
 app.get(
-  "/repos/:owner/:repo/issues",
+  '/repos/:owner/:repo/issues',
   asyncHandler(async (req, res) => {
     const { owner, repo } = req.params;
     const issueData = await getIssues(owner, repo);
     res.status(200).json(issueData);
-  })
+  }),
 );
 
 // get issue
 app.get(
-  "/repos/:owner/:repo/issues/:issue_number",
+  '/repos/:owner/:repo/issues/:issue_number',
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
     const issueData = await getIssue(owner, repo, issue_number);
 
     res.status(200).json(issueData);
-  })
+  }),
 );
 
 // update issue
 app.put(
-  "/repos/:owner/:repo/issues/:issue_number",
+  '/repos/:owner/:repo/issues/:issue_number',
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
     const { title, body, state } = req.body;
-    console.log(req.body, "body");
+    console.log(req.body, 'body');
     const issueData = await updateIssue(
       owner,
       repo,
       issue_number,
       title,
       body,
-      state
+      state,
     );
     res.status(200).json(issueData);
-  })
+  }),
 );
 
 // comment on issue
 app.post(
-  "/repos/:owner/:repo/issues/:issue_number/comments",
+  '/repos/:owner/:repo/issues/:issue_number/comments',
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
     const { body } = req.body;
     const issueData = await commentIssue(owner, repo, issue_number, body);
     res.status(200).json(issueData);
-  })
+  }),
 );
 
 // get comments on issue
 app.get(
-  "/repos/:owner/:repo/issues/:issue_number/comments",
+  '/repos/:owner/:repo/issues/:issue_number/comments',
   asyncHandler(async (req, res) => {
     const { owner, repo, issue_number } = req.params;
     const comments = await getComments(owner, repo, issue_number);
     res.status(200).json(comments);
-  })
+  }),
 );
 
 app.get(
-  "/logo.png",
+  '/logo.png',
   asyncHandler(async (req, res) => {
-    const filename = path.join(__dirname, "logo.png");
-    res.sendFile(filename, { headers: { "Content-Type": "image/png" } });
-  })
+    const filename = path.join(__dirname, 'logo.png');
+    res.sendFile(filename, { headers: { 'Content-Type': 'image/png' } });
+  }),
 );
 
 app.get(
-  "/.well-known/ai-plugin.json",
+  '/.well-known/ai-plugin.json',
   asyncHandler(async (req, res) => {
-    const filename = path.join(__dirname, ".well-known", "ai-plugin.json");
-    res.sendFile(filename, { headers: { "Content-Type": "application/json" } });
-  })
+    const filename = path.join(__dirname, '.well-known', 'ai-plugin.json');
+    res.sendFile(filename, { headers: { 'Content-Type': 'application/json' } });
+  }),
 );
 
 app.get(
-  "/openapi.yaml",
+  '/openapi.yaml',
   asyncHandler(async (req, res) => {
-    const filename = path.join(__dirname, "openapi.yaml");
-    res.sendFile(filename, { headers: { "Content-Type": "text/yaml" } });
-  })
+    const filename = path.join(__dirname, 'openapi.yaml');
+    res.sendFile(filename, { headers: { 'Content-Type': 'text/yaml' } });
+  }),
 );
 
 const main = () => {
-  app.listen(5003, "0.0.0.0", () => {
-    console.log("Server running on http://0.0.0.0:5003");
+  app.listen(5003, '0.0.0.0', () => {
+    console.log('Server running on http://0.0.0.0:5003');
   });
 };
 
