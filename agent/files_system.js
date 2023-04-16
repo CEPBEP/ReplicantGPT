@@ -34,7 +34,11 @@ To delete files, use:
 
 To rename files, use:
 --RENAME: old_filename new_filename
-`;
+`
+// You will be given a task and a list of files.  If you need any files you can ask for them using the 'cat' command before you start.
+
+// --CAT: filename
+// `;
 
 export function performOperations(inputText, directoryPath) {
     const changes = [];
@@ -88,6 +92,10 @@ export function performOperations(inputText, directoryPath) {
             console.log('renaming file', oldFilename, 'to', newFilename);
             const oldFilePath = path.join(directoryPath, oldFilename);
             const newFilePath = path.join(directoryPath, newFilename);
+            const newBase = path.dirname(newFilePath);
+            if (!fs.existsSync(newBase)) {
+                fsExtra.mkdirpSync(newBase);
+            }
             fs.renameSync(oldFilePath, newFilePath);
             changes.push({ rm: oldFilename, add: newFilename });
         }
